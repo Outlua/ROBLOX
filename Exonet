@@ -1,0 +1,37 @@
+--[[
+		ExoNet: Makes your body Network-Replicatible
+		Features:
+		| Powerful net that will carry your hats around!
+		| Stable: Will hardly fall a shot of your parts!
+		| Replicatible: Works in any game and replicates easy!
+	]]--
+----------------------------------------------------------------------------------------------------------
+local plr = game.Players.LocalPlayer
+local char = plr.Character
+local NetworkAccess = coroutine.create(function()
+	settings().Physics.AllowSleep = false
+	settings().Physics.PhysicsEnvironmentalThrottle = Enum.EnviromentalPhysicsThrottle.Disabled
+	spawn(function()
+		while task.wait() do
+			for _, Players in next, game:GetService("Players"):GetPlayers() do
+				if Players ~= game:GetService("Players").LocalPlayer then
+					Players.MaximumSimulationRadius = 0 
+					sethiddenproperty(Players, "SimulationRadius", 0) 
+				end 
+			end
+			game:GetService("Players").LocalPlayer.MaximumSimulationRadius = math.pow(math.huge,math.huge)
+			setsimulationradius(math.pow(math.huge,math.huge)) 
+		end 
+	end)
+end) 
+coroutine.resume(NetworkAccess)
+for i,v in next, game:GetService("Players").LocalPlayer.Character:GetDescendants() do
+	if v:IsA("BasePart") and v.Name ~="HumanoidRootPart" then 
+		game:GetService("RunService").Heartbeat:connect(function()
+			v.Velocity = Vector3.new(0,35,0)
+			v.Massless = true
+			v.CanQuery = false
+			v.CanTouch = false
+		end)
+	end
+end
